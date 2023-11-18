@@ -12,7 +12,7 @@ postsRouter.get('/', (req: Request, res: Response) => {
     const posts = PostsRepository.GetAllPosts()
     res.status(200).send(posts)
 })
-postsRouter.post('/', authMiddleware, postsValidation, (req: RequestWithBody<PostCreateModel>, res: Response) => {
+postsRouter.post('/', authMiddleware, postsValidation(), (req: RequestWithBody<PostCreateModel>, res: Response) => {
     const post = PostsRepository.CreateNewPost(req.body)
     res.status(201).send(post)
 })
@@ -25,7 +25,7 @@ postsRouter.get('/:id', (req: RequestWithParams<Params>, res: Response) => {
 
     res.status(200).send(post)
 })
-postsRouter.put('/:id', authMiddleware, postsValidation, (req: RequestWithBodyAndParams<PostUpdateModel, Params>, res: Response) => {
+postsRouter.put('/:id', authMiddleware, postsValidation(), (req: RequestWithBodyAndParams<PostUpdateModel, Params>, res: Response) => {
     const id = req.params.id
     const post = PostsRepository.GetPostById(id)
 

@@ -16,7 +16,6 @@ export class PostsRepository{
     }
 
     static CreateNewPost(post: PostCreateModel) {
-
         const blog = db.blogs.find(b => b.id === post.blogId)
         if (!blog) {
             return null
