@@ -42,7 +42,7 @@ export class PostsRepository{
         }
         db.posts[foundPostIndex] = {
             ...post,
-            id: (+(new Date())).toString(),
+            id: db.posts[foundPostIndex].id,
             blogName: blog.name
         }
         return
