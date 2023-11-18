@@ -21,7 +21,7 @@ export const inputModelValidation = (req: Request, res: Response, next: NextFunc
         const err = errors.array({onlyFirstError: true})
 
         return res.status(400).send({
-            errorMessages: err
+            errorsMessages: err
         })
     }
 
