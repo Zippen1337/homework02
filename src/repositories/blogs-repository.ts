@@ -1,5 +1,5 @@
 import {db} from "../db/db";
-import {BlogCreateModel} from "../types/blogs/input";
+import {BlogCreateModel, BlogUpdateModel} from "../types/blogs/input";
 
 export class BlogsRepository{
     static getAllBlogs() {
@@ -23,20 +23,27 @@ export class BlogsRepository{
         return newBlog
     }
 
-    static UpdateBlogById(id: string, blog: BlogCreateModel) {
-        const foundBlog  = db.blogs.find(b => b.id === id)
-        const foundBlogIndex  = db.blogs.findIndex(b => b.id === id)
-        const updatedBlog = {
-            // @ts-ignore
+    static UpdateBlogById(id: string, blog: BlogUpdateModel) {
+        const foundBlogIndex = db.blogs.findIndex(b => b.id === id)
+        if (foundBlogIndex === -1) {
+            return
+        }
+        const foundBlog = db.blogs[foundBlogIndex]
+
+        db.blogs[foundBlogIndex] = {
             id: foundBlog.id,
             ...blog
         }
-        db.blogs[foundBlogIndex] = updatedBlog
-    return updatedBlog
+        return
     }
 
     static DeleteBlogById(id:string) {
         const foundBlogIndex  = db.blogs.findIndex(b => b.id === id)
+        if (foundBlogIndex === -1 ) {
+            return
+        }
         db.blogs.splice(foundBlogIndex,1)
+        return
     }
+
 }
