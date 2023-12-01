@@ -15,8 +15,13 @@ postsRouter.get('/',
 })
 postsRouter.post('/', authMiddleware, postsValidation(),
     async (req: RequestWithBody<PostCreateModel>, res: Response) => {
-    const post = await PostsRepository.createPost(req.body)
-    res.status(201).send(post)
+    const postId = await PostsRepository.createPost(req.body)
+        if (!postId) {
+            res.sendStatus(400)
+            return
+        }
+        const newPost = await PostsRepository.getPostById(postId.toString())
+    res.status(201).send(newPost)
 })
 postsRouter.get('/:id',
     async (req: RequestWithParams<Params>, res: Response) => {

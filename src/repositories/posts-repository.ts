@@ -28,18 +28,27 @@ export class PostsRepository{
     }
 
     static async createPost(post: PostCreateModel) {
-       const createdAt = new Date().toISOString();
-       const blog = await blogsCollection.findOne({_id: new ObjectId(post.blogId)})
-        if (blog) {
-            const newPost = {
-                ...post,
-                id: new ObjectId().toString(),
-                blogName: blog.name,
-                createdAt: createdAt
+        try {
+            const createdAt = new Date().toISOString();
+            const blog = await blogsCollection.findOne({_id: new ObjectId(post.blogId)})
+            if (blog) {
+                const newPost = {
+                    ...post,
+                    id: new ObjectId().toString(),
+                    blogName: blog.name,
+                    createdAt: createdAt
+                }
+                const result = await postsCollection.insertOne(newPost)
+                await postsCollection.updateOne({id: newPost.id}, {
+                    $set: {
+                        id: result.insertedId
+                    }
+                })
+                return result.insertedId
+            } else {
+                return null
             }
-            await postsCollection.insertOne(newPost)
-            return newPost
-        } else {
+        } catch {
             return null
         }
     }
