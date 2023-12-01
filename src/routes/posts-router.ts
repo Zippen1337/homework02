@@ -34,7 +34,7 @@ postsRouter.get('/:id',
 
     res.status(200).send(post)
 })
-postsRouter.put('/:id', authMiddleware, postsValidation(),
+postsRouter.put('/:id', authMiddleware, blogIdValidation, postsValidation(),
     async (req: RequestWithBodyAndParams<PostUpdateModel, Params>, res: Response) => {
     const id = req.params.id
     const post = await PostsRepository.getPostById(id)
