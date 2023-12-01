@@ -7,7 +7,7 @@ dotenv.config()
 
 export const port = 3000;
 
-const mongoUri = process.env.MONGO_URL || "mongodb://localhost:27017"
+const mongoUri = process.env.MONGO_URL || "mongodb+srv://zippen1337:4rqvL77JnkmLopwX@homework.jthk7hj.mongodb.net/homework?retryWrites=true&w=majority" || "mongodb://localhost:27017"
 
 const client = new MongoClient(mongoUri)
 
