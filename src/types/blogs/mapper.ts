@@ -7,6 +7,7 @@ export const blogMapper = (blog: WithId<BlogType>): OutputBlogType => {
         name: blog.name,
         description: blog.description,
         websiteUrl: blog.websiteUrl,
-        createdAt: blog.createdAt
+        createdAt: blog.createdAt,
+        isMembership: false
     }
 }
