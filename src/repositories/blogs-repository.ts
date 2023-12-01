@@ -34,7 +34,7 @@ export class BlogsRepository{
         }
 
         const result = await blogsCollection.insertOne(newBlog)
-        blogsCollection.updateOne({id: newBlog.id}, {
+        await blogsCollection.updateOne({id: newBlog.id}, {
             $set: {
                 id: result.insertedId
             }
