@@ -16,8 +16,9 @@ blogsRouter.get('/',
 
 blogsRouter.post('/', authMiddleware, blogsValidation(),
     async (req: RequestWithBody<BlogCreateModel>, res: Response) => {
-    const blog = await BlogsRepository.createBlog(req.body)
-    res.status(201).send(blog)
+    const blogId = await BlogsRepository.createBlog(req.body)
+        const newBlog = await BlogsRepository.getBlogById(blogId.toString())
+    res.status(201).send(newBlog)
 })
 blogsRouter.get('/:id',
     async (req: RequestWithParams<Params>, res: Response) => {
