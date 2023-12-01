@@ -39,7 +39,7 @@ export class BlogsRepository{
                 id: result.insertedId
             }
         })
-        return newBlog
+        return await blogsCollection.findOne({_id: result.insertedId})
     }
 
     static async updateBlog(id: string, updateData: BlogUpdateModel): Promise<boolean> {
