@@ -14,13 +14,17 @@ export class PostsRepository{
     }
 
     static async getPostById(id: string): Promise<OutputPostType | null> {
-        const post = await postsCollection.findOne({_id: new ObjectId(id)})
+        try {
+            const post = await postsCollection.findOne({_id: new ObjectId(id)})
 
-        if (!post) {
+            if (!post) {
+                return null
+            }
+
+            return postMapper(post)
+        } catch {
             return null
         }
-
-        return postMapper(post)
     }
 
     static async createPost(post: PostCreateModel) {
@@ -41,25 +45,33 @@ export class PostsRepository{
     }
 
     static async updatePost(id: string, post: PostUpdateModel): Promise<Boolean> {
-        const blog = await blogsCollection.findOne({_id: new ObjectId(post.blogId)})
+        try {
+            const blog = await blogsCollection.findOne({_id: new ObjectId(post.blogId)})
 
-        const result = await postsCollection.updateOne({_id: new ObjectId(id)},
-            {
-                $set: {
-                    title: post.title,
-                    shortDescription: post.shortDescription,
-                    content: post.content,
-                    blogId: post.blogId,
-                    blogName: blog!.name,
-                }
-            })
-        return !!result.matchedCount;
+            const result = await postsCollection.updateOne({_id: new ObjectId(id)},
+                {
+                    $set: {
+                        title: post.title,
+                        shortDescription: post.shortDescription,
+                        content: post.content,
+                        blogId: post.blogId,
+                        blogName: blog!.name,
+                    }
+                })
+            return !!result.matchedCount;
+        } catch {
+            return false
+        }
     }
 
     static async DeletePostById(id: string) {
-        const result = await postsCollection.deleteOne({_id: new ObjectId(id)})
+        try {
+            const result = await postsCollection.deleteOne({_id: new ObjectId(id)})
 
-        return !!result.deletedCount
+            return !!result.deletedCount
+        } catch {
+            return false
+        }
     }
 
 }

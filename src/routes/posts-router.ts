@@ -24,6 +24,7 @@ postsRouter.get('/:id',
     const post = await PostsRepository.getPostById(id)
     if (!post) {
         res.sendStatus(404)
+        return
     }
 
     res.status(200).send(post)
@@ -35,6 +36,7 @@ postsRouter.put('/:id', authMiddleware, postsValidation(),
 
     if (!post) {
         res.sendStatus(404)
+        return
     }
     await PostsRepository.updatePost(id, req.body)
     res.sendStatus(204)
@@ -45,6 +47,7 @@ postsRouter.delete('/:id', authMiddleware,
     const post = await PostsRepository.getPostById(id)
     if (!post) {
         res.sendStatus(404)
+        return
     }
     await PostsRepository.DeletePostById(id)
     res.sendStatus(204)

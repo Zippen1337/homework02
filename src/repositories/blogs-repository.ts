@@ -12,13 +12,17 @@ export class BlogsRepository{
     }
 
     static async getBlogById(id: string): Promise<OutputBlogType | null> {
-        const blog = await blogsCollection.findOne({_id: new ObjectId(id)})
+        try {
+            const blog = await blogsCollection.findOne({_id: new ObjectId(id)})
 
-        if (!blog) {
+            if (!blog) {
+                return null
+            }
+
+            return blogMapper(blog)
+        } catch {
             return null
         }
-
-        return blogMapper(blog)
     }
     static async createBlog(blog: BlogCreateModel) {
         const createdAt = new Date().toISOString()
@@ -34,21 +38,30 @@ export class BlogsRepository{
     }
 
     static async updateBlog(id: string, updateData: BlogUpdateModel): Promise<boolean> {
-        const result = await blogsCollection.updateOne({_id: new ObjectId(id)},{
-            $set: {
-                name: updateData.name,
-                description: updateData.description,
-                websiteUrl: updateData.websiteUrl
-            }
-        })
+        try {
+            const result = await blogsCollection.updateOne({_id: new ObjectId(id)}, {
+                $set: {
+                    name: updateData.name,
+                    description: updateData.description,
+                    websiteUrl: updateData.websiteUrl
+                }
+            })
 
-        return !!result.matchedCount
+            return !!result.matchedCount
+        }
+        catch {
+            return false
+        }
         }
 
     static async deleteBlog(id:string): Promise<boolean> {
-        const result = await blogsCollection.deleteOne({_id: new ObjectId(id)})
+        try {
+            const result = await blogsCollection.deleteOne({_id: new ObjectId(id)})
 
-        return !!result.deletedCount
+            return !!result.deletedCount
+        } catch {
+            return false
+        }
     }
 
 }

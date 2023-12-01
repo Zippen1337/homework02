@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 
 dotenv.config()
 
-export const port = 80;
+export const port = 3000;
 
 const mongoUri = process.env.MONGO_URL || "mongodb://localhost:27017"
 

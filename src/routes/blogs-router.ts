@@ -26,6 +26,7 @@ blogsRouter.get('/:id',
 
     if (!blog) {
         res.sendStatus(404)
+        return
     }
 
     res.status(200).send(blog)
@@ -37,6 +38,7 @@ blogsRouter.put('/:id', authMiddleware, blogsValidation(),
 
     if (!blog) {
         res.sendStatus(404)
+        return
     }
     await BlogsRepository.updateBlog(id, req.body)
     res.sendStatus(204)
@@ -48,6 +50,7 @@ blogsRouter.delete('/:id', authMiddleware,
 
     if (!blog) {
         res.sendStatus(404)
+        return
     }
     await BlogsRepository.deleteBlog(id)
     res.sendStatus(204)
