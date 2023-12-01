@@ -29,14 +29,14 @@ export class BlogsRepository{
         const newBlog = {
             ...blog,
             id: new ObjectId().toString(),
-            isMembership: false,
             createdAt: createdAt
         }
 
         const result = await blogsCollection.insertOne(newBlog)
         await blogsCollection.updateOne({id: newBlog.id}, {
             $set: {
-                id: result.insertedId
+                id: result.insertedId,
+                isMembership: false
             }
         })
         return await blogsCollection.findOne({_id: result.insertedId})
