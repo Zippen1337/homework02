@@ -2,7 +2,7 @@ import {Request, Response, Router} from "express";
 import {Params, RequestWithBody, RequestWithBodyAndParams, RequestWithParams} from "../types/types";
 import {PostCreateModel, PostUpdateModel} from "../types/posts/input";
 import {authMiddleware} from "../middlewares/auth/auth-middleware";
-import {postsValidation} from "../validators/posts-validator";
+import {blogIdValidation, postsValidation} from "../validators/posts-validator";
 import {PostsRepository} from "../repositories/posts-repository";
 
 
@@ -13,7 +13,7 @@ postsRouter.get('/',
     const posts = await PostsRepository.getAllPosts()
     res.status(200).send(posts)
 })
-postsRouter.post('/', authMiddleware, postsValidation(),
+postsRouter.post('/', authMiddleware, blogIdValidation ,postsValidation(),
     async (req: RequestWithBody<PostCreateModel>, res: Response) => {
     const postId = await PostsRepository.createPost(req.body)
         if (!postId) {
