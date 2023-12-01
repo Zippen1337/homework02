@@ -1,7 +1,7 @@
 import {PostCreateModel, PostUpdateModel} from "../types/posts/input";
 import {blogsCollection, postsCollection} from "../db/db";
 import {postMapper} from "../types/posts/mapper";
-import {OutputPostType, PostType} from "../types/posts/output";
+import {OutputPostType} from "../types/posts/output";
 import {ObjectId} from "mongodb";
 
 

@@ -29,7 +29,7 @@ export class BlogsRepository{
             createdAt: createdAt
         }
 
-        const result = await blogsCollection.insertOne(newBlog)
+        await blogsCollection.insertOne(newBlog)
         return newBlog
     }
 
