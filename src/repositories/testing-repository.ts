@@ -1,8 +1,8 @@
-import {db} from "../db/db";
+import {blogsCollection,postsCollection} from "../db/db";
 
 export class TestingRepository {
-    static DeleteAllData() {
-        db.blogs = []
-        db.posts = []
+    static async deleteAllData() {
+        await blogsCollection.deleteMany({})
+        await postsCollection.deleteMany({})
     }
 }

@@ -1,7 +1,6 @@
 import {app} from "./settings";
+import {port, runDb} from "./db/db";
 
-const port = process.env.PORT || 3000
-
-app.listen(port, () => {
-    console.log(`App listening on port ${port}`)
+app.listen(port, async () => {
+    await runDb()
 })

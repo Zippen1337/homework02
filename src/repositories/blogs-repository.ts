@@ -1,49 +1,54 @@
-import {db} from "../db/db";
 import {BlogCreateModel, BlogUpdateModel} from "../types/blogs/input";
+import {blogsCollection} from "../db/db";
+import {ObjectId} from "mongodb";
+import {OutputBlogType} from "../types/blogs/output";
+import {blogMapper} from "../types/blogs/mapper";
 
 export class BlogsRepository{
-    static getAllBlogs() {
-        return db.blogs
+    static async getAllBlogs() {
+        const blogs = await blogsCollection.find({}).toArray()
+
+        return blogs.map(blogMapper)
     }
 
-    static getBlogById(id: string) {
-        const blog = db.blogs.find(b => b.id === id)
+    static async getBlogById(id: string): Promise<OutputBlogType | null> {
+        const blog = await blogsCollection.findOne({_id: new ObjectId(id)})
+
         if (!blog) {
             return null
         }
-        return blog
+
+        return blogMapper(blog)
     }
-    static CreateNewBlog(blog: BlogCreateModel) {
+    static async createBlog(blog: BlogCreateModel) {
+        const createdAt = new Date().toISOString()
         const newBlog = {
-            id: (+(new Date())).toString(),
-            ...blog
+            ...blog,
+            id: new ObjectId().toString(),
+            isMembership: false,
+            createdAt: createdAt
         }
 
-        db.blogs.push(newBlog)
+        const result = await blogsCollection.insertOne(newBlog)
         return newBlog
     }
 
-    static UpdateBlogById(id: string, blog: BlogUpdateModel) {
-        const foundBlogIndex = db.blogs.findIndex(b => b.id === id)
-        if (foundBlogIndex === -1) {
-            return
-        }
-        const foundBlog = db.blogs[foundBlogIndex]
+    static async updateBlog(id: string, updateData: BlogUpdateModel): Promise<boolean> {
+        const result = await blogsCollection.updateOne({_id: new ObjectId(id)},{
+            $set: {
+                name: updateData.name,
+                description: updateData.description,
+                websiteUrl: updateData.websiteUrl
+            }
+        })
 
-        db.blogs[foundBlogIndex] = {
-            id: foundBlog.id,
-            ...blog
+        return !!result.matchedCount
         }
-        return
-    }
 
-    static DeleteBlogById(id:string) {
-        const foundBlogIndex  = db.blogs.findIndex(b => b.id === id)
-        if (foundBlogIndex === -1 ) {
-            return
-        }
-        db.blogs.splice(foundBlogIndex,1)
-        return
+    static async deleteBlog(id:string): Promise<boolean> {
+        const result = await blogsCollection.deleteOne({_id: new ObjectId(id)})
+
+        return !!result.deletedCount
     }
 
 }

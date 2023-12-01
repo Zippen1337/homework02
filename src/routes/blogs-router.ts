@@ -8,18 +8,21 @@ import {blogsValidation} from "../validators/blogs-validator";
 
 export const blogsRouter = Router({})
 
-blogsRouter.get('/', (req: Request, res: Response) => {
-    const blogs = BlogsRepository.getAllBlogs()
+blogsRouter.get('/',
+    async (req: Request, res: Response) => {
+    const blogs = await BlogsRepository.getAllBlogs()
     res.status(200).send(blogs)
 })
 
-blogsRouter.post('/', authMiddleware, blogsValidation(), (req: RequestWithBody<BlogCreateModel>, res: Response) => {
-    const blog = BlogsRepository.CreateNewBlog(req.body)
+blogsRouter.post('/', authMiddleware, blogsValidation(),
+    async (req: RequestWithBody<BlogCreateModel>, res: Response) => {
+    const blog = await BlogsRepository.createBlog(req.body)
     res.status(201).send(blog)
 })
-blogsRouter.get('/:id', (req: RequestWithParams<Params>, res: Response) => {
+blogsRouter.get('/:id',
+    async (req: RequestWithParams<Params>, res: Response) => {
     const id = req.params.id
-    const blog = BlogsRepository.getBlogById(id)
+    const blog = await BlogsRepository.getBlogById(id)
 
     if (!blog) {
         res.sendStatus(404)
@@ -27,23 +30,25 @@ blogsRouter.get('/:id', (req: RequestWithParams<Params>, res: Response) => {
 
     res.status(200).send(blog)
 })
-blogsRouter.put('/:id', authMiddleware, blogsValidation(), (req: RequestWithBodyAndParams<BlogUpdateModel, Params>, res: Response) => {
+blogsRouter.put('/:id', authMiddleware, blogsValidation(),
+    async (req: RequestWithBodyAndParams<BlogUpdateModel, Params>, res: Response) => {
     const id = req.params.id
-    const blog = BlogsRepository.getBlogById(id)
+    const blog = await BlogsRepository.getBlogById(id)
 
     if (!blog) {
         res.sendStatus(404)
     }
-    BlogsRepository.UpdateBlogById(id, req.body)
+    await BlogsRepository.updateBlog(id, req.body)
     res.sendStatus(204)
 })
-blogsRouter.delete('/:id', authMiddleware, (req: RequestWithParams<Params>, res: Response) => {
+blogsRouter.delete('/:id', authMiddleware,
+    async (req: RequestWithParams<Params>, res: Response) => {
     const id = req.params.id
-    const blog = BlogsRepository.getBlogById(id)
+    const blog = await BlogsRepository.getBlogById(id)
 
     if (!blog) {
         res.sendStatus(404)
     }
-    BlogsRepository.DeleteBlogById(id)
+    await BlogsRepository.deleteBlog(id)
     res.sendStatus(204)
 })

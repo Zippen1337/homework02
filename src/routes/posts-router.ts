@@ -8,39 +8,44 @@ import {PostsRepository} from "../repositories/posts-repository";
 
 export const postsRouter = Router({})
 
-postsRouter.get('/', (req: Request, res: Response) => {
-    const posts = PostsRepository.GetAllPosts()
+postsRouter.get('/',
+    async (req: Request, res: Response) => {
+    const posts = await PostsRepository.getAllPosts()
     res.status(200).send(posts)
 })
-postsRouter.post('/', authMiddleware, postsValidation(), (req: RequestWithBody<PostCreateModel>, res: Response) => {
-    const post = PostsRepository.CreateNewPost(req.body)
+postsRouter.post('/', authMiddleware, postsValidation(),
+    async (req: RequestWithBody<PostCreateModel>, res: Response) => {
+    const post = await PostsRepository.createPost(req.body)
     res.status(201).send(post)
 })
-postsRouter.get('/:id', (req: RequestWithParams<Params>, res: Response) => {
+postsRouter.get('/:id',
+    async (req: RequestWithParams<Params>, res: Response) => {
     const id = req.params.id
-    const post = PostsRepository.GetPostById(id)
+    const post = await PostsRepository.getPostById(id)
     if (!post) {
         res.sendStatus(404)
     }
 
     res.status(200).send(post)
 })
-postsRouter.put('/:id', authMiddleware, postsValidation(), (req: RequestWithBodyAndParams<PostUpdateModel, Params>, res: Response) => {
+postsRouter.put('/:id', authMiddleware, postsValidation(),
+    async (req: RequestWithBodyAndParams<PostUpdateModel, Params>, res: Response) => {
     const id = req.params.id
-    const post = PostsRepository.GetPostById(id)
+    const post = await PostsRepository.getPostById(id)
 
     if (!post) {
         res.sendStatus(404)
     }
-    PostsRepository.UpdatePostById(id, req.body)
+    await PostsRepository.updatePost(id, req.body)
     res.sendStatus(204)
 })
-postsRouter.delete('/:id', authMiddleware, (req: RequestWithParams<Params>, res: Response) => {
+postsRouter.delete('/:id', authMiddleware,
+    async (req: RequestWithParams<Params>, res: Response) => {
     const id = req.params.id
-    const post = PostsRepository.GetPostById(id)
+    const post = await PostsRepository.getPostById(id)
     if (!post) {
         res.sendStatus(404)
     }
-    PostsRepository.DeletePostById(id)
+    await PostsRepository.DeletePostById(id)
     res.sendStatus(204)
 })
